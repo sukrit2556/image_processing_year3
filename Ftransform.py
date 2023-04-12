@@ -1,34 +1,43 @@
-import numpy as np
 import cv2
+from matplotlib import pyplot as plt
+import numpy as np
 
-# Load image
-img = cv2.imread('zebra.jpeg', 0)
+img = cv2.imread("zebra.jpeg", cv2.IMREAD_GRAYSCALE)
 
-# Perform DFT
-dft = np.fft.fft2(img)
+dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
 dft_shift = np.fft.fftshift(dft)
+magnitude_spectrum = 20 * np.log(cv2.magnitude(dft_shift[:,:,0], dft_shift[:,:,1])) #magnitude of real and imaginary
 
-# Define a circular low pass filter
 rows, cols = img.shape
 crow, ccol = int(rows/2), int(cols/2)
-mask = np.zeros((rows, cols), np.uint8)
-r = int(0.1*cols)
-color = (255, 255, 255)
-cv2.circle(mask, (ccol, crow), r, color, -1)
+mask = np.zeros((rows, cols, 2), np.uint8)
+r = int(0.1 * cols)
+center = [crow, ccol]
+x, y = np.ogrid[:rows, :cols]
+mask_area = (x - center[0]) ** 2 + (y - center[1]) ** 2 <= r * r
+mask[mask_area] = 1
+fshift = dft_shift * mask
 
-# Apply the filter to the frequency domain representation of the image
-dft_filtered = dft_shift * mask
-cv2.imshow("filtered", dft_filtered)
+fshift_mask_mag = 2000 * np.log(cv2.magnitude(fshift[:, :, 0], fshift[:, :, 1]))
 
-result = np.zeros_like(dft_shift)
+f_ishift = np.fft.ifftshift(fshift)
+img_back = cv2.idft(f_ishift)
+img_back = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])
 
-# Invert the filtered DFT to obtain the filtered image
-idft_shift = np.fft.ifftshift(dft_filtered)
-img_back = np.fft.ifft2(idft_shift)
-img_filtered = np.abs(img_back)
+fig = plt.figure(figsize = (12, 12))
+ax1 = fig.add_subplot(2, 2, 1)
+ax1.imshow(img, cmap = 'gray')
+ax1.title.set_text('input Image')
+ax2 = fig.add_subplot(2, 2, 2)
+ax2.imshow(magnitude_spectrum, cmap = 'gray')
+ax2.title.set_text('FFT of image')
+ax3 = fig.add_subplot(2, 2, 3)
+ax3.imshow(fshift_mask_mag, cmap = 'gray')
+ax3.title.set_text('FFT + Mask')
+ax4 = fig.add_subplot(2, 2, 4)
+ax4.imshow(img_back, cmap = 'gray')
+ax4.title.set_text('after inverse FFT')
+plt.show()
 
-# Display original and filtered images
-#cv2.imshow('Original', img)
-cv2.imshow('Filtered', img_filtered)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
