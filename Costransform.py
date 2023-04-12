@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-
+#change
 img = cv2.imread("zebra.jpeg", cv2.IMREAD_GRAYSCALE)
 
 dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
