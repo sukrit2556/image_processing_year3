@@ -9,6 +9,7 @@ dft_shift = np.fft.fftshift(dft)
 magnitude_spectrum = 20 * np.log(cv2.magnitude(dft_shift[:,:,0], dft_shift[:,:,1])) #magnitude of real and imaginary
 
 rows, cols = img.shape
+print(img.shape)
 crow, ccol = int(rows/2), int(cols/2)
 center = [crow, ccol]
 x, y = np.ogrid[:rows, :cols]
@@ -20,10 +21,8 @@ fshift_mask_mag = [zero, zero, zero]
 f_ishift = [zero, zero, zero]
 img_back = [zero, zero, zero]
 
-for i in range (0,3):
-    print("i = ", i, "\n\n")
-    
-    r = int(radius[i] * cols)
+for i in range (0,3):  
+    r = int(radius[i] * rows)
     mask_area = (x - center[0]) ** 2 + (y - center[1]) ** 2 <= r * r
     mask[i][mask_area] = 1
     fshift[i] = dft_shift * mask[i]
@@ -34,21 +33,37 @@ for i in range (0,3):
     img_back[i] = cv2.magnitude(img_back[i][:, :, 0], img_back[i][:, :, 1])
 
 fig = plt.figure(figsize = (12, 12))
-ax1 = fig.add_subplot(3, 2, 1)
+ax1 = fig.add_subplot(4, 2, 1)
 ax1.imshow(img, cmap = 'gray')
 ax1.title.set_text('Original Image')
-ax2 = fig.add_subplot(3, 2, 2)
+
+ax2 = fig.add_subplot(4, 2, 2)
 ax2.imshow(magnitude_spectrum, cmap = 'gray')
 ax2.title.set_text('FFT of image')
-ax3 = fig.add_subplot(3, 2, 3)
+
+ax3 = fig.add_subplot(4, 2, 3)
 ax3.imshow(fshift_mask_mag[0], cmap = 'gray')
-ax3.title.set_text('FFT + Mask')
-ax3 = fig.add_subplot(3, 2, 4)
-ax3.imshow(fshift_mask_mag[1], cmap = 'gray')
-ax3.title.set_text('FFT + Mask')
-ax3 = fig.add_subplot(3, 2, 5)
-ax3.imshow(fshift_mask_mag[2], cmap = 'gray')
-ax3.title.set_text('FFT + Mask')
+ax3.title.set_text('FFT + Mask r = 0.1 * cols')
+
+ax4 = fig.add_subplot(4, 2, 4)
+ax4.imshow(img_back[0], cmap = 'gray')
+ax4.title.set_text('result r = 0.1')
+
+ax5 = fig.add_subplot(4, 2, 5)
+ax5.imshow(fshift_mask_mag[1], cmap = 'gray')
+ax5.title.set_text('FFT + Mask r = 0.2 * cols')
+
+ax6 = fig.add_subplot(4, 2, 6)
+ax6.imshow(img_back[1], cmap = 'gray')
+ax6.title.set_text('result r = 0.2')
+cv2.imshow("image", img_back[1])
+ax7 = fig.add_subplot(4, 2, 7)
+ax7.imshow(fshift_mask_mag[2], cmap = 'gray')
+ax7.title.set_text('FFT + Mask r = 0.3 * cols')
+
+ax8 = fig.add_subplot(4, 2, 8)
+ax8.imshow(img_back[2], cmap = 'gray')
+ax8.title.set_text('result r = 0.3')
 
 
 
