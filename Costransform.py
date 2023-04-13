@@ -32,7 +32,7 @@ def high_pass_filter(radius):
     #img_back = cv2.magnitude(img_back[:, : 0], img_back[:, :, 1])
     return img_back
 
-img = cv2.imread("zebra.jpeg", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("zebra.bmp", cv2.IMREAD_GRAYSCALE)
 
 dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
 dft_shift = np.fft.fftshift(dft)

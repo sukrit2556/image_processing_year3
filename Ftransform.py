@@ -9,7 +9,7 @@ def process_spectrum(spectrum):
     mag **= 1/1
     return mag
 
-img = cv2.imread("zebra.jpeg", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("zebra.bmp", cv2.IMREAD_GRAYSCALE)
 
 dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
 dft_shift = np.fft.fftshift(dft)
@@ -77,7 +77,7 @@ ax8.title.set_text('result r = 0.3')
 
 
 
-#plt.show()
+plt.show()
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
