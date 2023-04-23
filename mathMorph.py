@@ -1,13 +1,21 @@
 import cv2
 import numpy as np
+# Load image
+img = cv2.imread("bag.png", 0)
 
-img = cv2.imread("bag.png")
+# Apply thresholding
+ret, thresh = cv2.threshold(img, 90, 255, cv2.THRESH_BINARY_INV)
+kernel = np.ones((3,3), np.uint8)
+thresh = cv2.dilate(thresh, kernel, iterations=1)
 
-hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-hsv1 = hsv[:, :, 0]
-hsv2 = hsv[:, :, 1]
-hsv3 = hsv[:, :, 2]
-cv2.imshow("result", hsv)
-cv2.imshow("concate", (np.concatenate((hsv1, hsv2, hsv3), axis=1)))
+num_labels, labels = cv2.connectedComponents(thresh)
+
+img_labeled = cv2.applyColorMap(labels.astype(np.uint8)*10, cv2.COLORMAP_JET)
+
+# Show images
+cv2.imshow("Original Image", img)
+cv2.imshow("Thresholded Image", thresh)
+
+cv2.imshow("Labeled Regions", img_labeled)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
