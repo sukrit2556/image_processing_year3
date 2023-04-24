@@ -15,7 +15,6 @@ img_labeled = cv2.applyColorMap(labels.astype(np.uint8)*10, cv2.COLORMAP_JET)
 # Show images
 cv2.imshow("Original Image", img)
 cv2.imshow("Thresholded Image", thresh)
-
 cv2.imshow("Labeled Regions", img_labeled)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
