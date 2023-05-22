@@ -27,6 +27,7 @@ fshift = [zero, zero, zero]
 fshift_mask_mag = [zero, zero, zero]
 f_ishift = [zero, zero, zero]
 img_back = [zero, zero, zero]
+#img_processed = [zero, zero, zero]
 
 for i in range (0,3):  
     r = int(radius[i] * rows)
@@ -37,9 +38,9 @@ for i in range (0,3):
 
     f_ishift[i] = np.fft.ifftshift(fshift[i])
     img_back[i] = cv2.idft(f_ishift[i])
-    img_processed = process_spectrum(img_back[i])
+    #img_processed[i] = process_spectrum(img_back[i])
     img_back[i] = cv2.magnitude(img_back[i][:, :, 0], img_back[i][:, :, 1])
-    cv2.imwrite('DFTTrans'+str(i)+'.jpg', 255*img_processed)
+    #cv2.imwrite('DFTTrans'+str(i)+'.jpg', 255*img_processed)
 
 fig = plt.figure(figsize = (4, 4))
 ax1 = fig.add_subplot(2, 4, 1)
